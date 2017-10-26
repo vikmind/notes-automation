@@ -1,4 +1,4 @@
-cd "$( dirname "$0" )/../"
+cd ../
 
 CURRENT_YEAR="$(date +%Y)"
 PROJECT=${1:-Default}
