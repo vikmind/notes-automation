@@ -7,35 +7,13 @@ sum=$((8-$numdaycheck))
 NEXT_MONDAY_COMMAND="date -v+$(echo $sum)d"
 NEXT_SUNDAY_COMMAND="date -v+$(echo $(($sum + 7)))d"
 
-# 1. Move current week to YEAR folder
-CURRENT_MONDAY_COMMAND="date -v-$(($(date +%u)-1))d"
-CURRENT_YEAR="$($CURRENT_MONDAY_COMMAND +%Y)"
-FROM_FILE="_Done_$($CURRENT_MONDAY_COMMAND +%Y-%m-%d_W%V).md"
-TO_FILE="$($CURRENT_MONDAY_COMMAND +'%Y/Done_%Y-%m-%d_W%V').md"
-
-# 1.1 Clean file
-sed -i '' '/Meditate/d' $FROM_FILE
-sed -i '' '/Exercise:/d' $FROM_FILE
-sed -i '' '/Grooming/d' $FROM_FILE
-
-# 1.2 Create YEAR folder
-mkdir -p $($CURRENT_MONDAY_COMMAND +%Y)
-
-# 1.3 Move
-mv $FROM_FILE $TO_FILE
-
-# 2. Append week header to YEAR/Done_YEAR.md
-MONDAY_LINE=$(sed -n '/#### Monday/=' $TO_FILE)
-echo "" >> $CURRENT_YEAR/Done_$CURRENT_YEAR.md
-head -n $(($MONDAY_LINE - 2)) $TO_FILE >> $CURRENT_YEAR/Done_$CURRENT_YEAR.md
-
-# 3. Create file for new week
+# 1. Create file for new week
 NEXT_WEEK_NUMBER="$($NEXT_MONDAY_COMMAND +%V)"
 NEXT_MONDAY_FORMATTED="$($NEXT_MONDAY_COMMAND +%d.%m)"
 NEXT_SUNDAY_FORMATTED="$($NEXT_SUNDAY_COMMAND +%d.%m)"
 NEW_FILE_NAME="_Done_$($NEXT_MONDAY_COMMAND +%Y-%m-%d_W%V).md"
 
-# 3.1 Start creating header
+# 2 Start creating header
 touch $NEW_FILE_NAME
 echo "### $($NEXT_MONDAY_COMMAND +%Y) week $NEXT_WEEK_NUMBER" >> $NEW_FILE_NAME
 echo "#### $NEXT_MONDAY_FORMATTED - $NEXT_SUNDAY_FORMATTED" >> $NEW_FILE_NAME
@@ -43,7 +21,7 @@ echo "* * *" >> $NEW_FILE_NAME
 echo "Project|Goal|Mon|Tue|Wed|Thu|Fri|Sat|Sun|All|Complete?" >> $NEW_FILE_NAME
 echo "---|---|---|---|---|---|---|---|---|---|---" >> $NEW_FILE_NAME
 
-# 3.2 Write weekly tasks to header and align them
+# 3 Write weekly tasks to header and align them
 COUNT=0
 LONGEST_PROJECT=0
 LONGEST_GOAL=0
