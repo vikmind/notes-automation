@@ -5,7 +5,7 @@ cd $DIR
 numdaycheck="$(date +%u)"
 sum=$((8-$numdaycheck))
 NEXT_MONDAY_COMMAND="date -v+$(echo $sum)d"
-NEXT_SUNDAY_COMMAND="date -v+$(echo $(($sum + 7)))d"
+NEXT_SUNDAY_COMMAND="date -v+$(echo $(($sum + 6)))d"
 
 # 1. Create file for new week
 NEXT_WEEK_NUMBER="$($NEXT_MONDAY_COMMAND +%V)"
