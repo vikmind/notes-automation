@@ -1,7 +1,8 @@
+#/bin/bash
 GREEN='\033[1;32m'
 RED='\033[1;31m'
 NC='\033[0m'
-DIR="$( cd "$( dirname "$0" )/../" && pwd )"
+DIR="$(dirname $0)/.."
 
 echo "\n${RED}FOCUS ON:${NC}\n"
 COUNT=0
