@@ -3,9 +3,11 @@ GREEN='\033[1;32m'
 RED='\033[1;31m'
 NC='\033[0m'
 DIR="$(dirname $0)/.."
-
-echo -e "\n${RED}FOCUS ON:${NC}\n"
 COUNT=0
+
+echo -e ""
+echo -e "${RED}FOCUS ON:${NC}"
+echo -e ""
 while read line
 do
   COUNT=$(($COUNT+1))
