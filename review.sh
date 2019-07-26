@@ -1,3 +1,4 @@
+git pull
 DIR="$( cd "$( dirname "$0" )/../" && pwd )"
 
 CURRENT_MONDAY_COMMAND="date -v-$(($(date +%u)-1))d"
