@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import subprocess
 import re
@@ -13,7 +13,7 @@ current_filename = current_monday.strftime('_Done_%Y-%m-%d_W%V.md')
 subprocess.run(['git', 'pull'], check=True)
 subprocess.run(['todoist', 's'], check=True)
 
-data = subprocess.check_output(['todoist', '--csv', 'l', '-f', 'today']).decode('utf-8').splitlines()
+data = subprocess.check_output(['todoist', '--csv', 'cl', '-f', 'today']).decode('utf-8').splitlines()
 
 def taskToMd(line):
   return re.sub(r'^\d.+#"?([^,"]+)"?,*"?([^"]+)"?$', r'- [\1] \2', line)
