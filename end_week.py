@@ -21,6 +21,7 @@ new_filename = current_monday.strftime('%Y/Done_%Y-%m-%d_W%V.md')
 new_file = open(new_filename, 'w+')
 new_file.write('\n'.join(filteredLines))
 new_file.close()
+os.remove(current_filename)
 print('{} is filtered and moved to {}'.format(current_filename, new_filename))
 
 # Write current week headers to year report
@@ -30,3 +31,4 @@ idx = filteredLines.index(current_monday.strftime('#### %A, %B %d'))
 year_file.write('\n' + '\n'.join(filteredLines[0:idx-1]) + '\n')
 year_file.close()
 print('{} is updated with new week'.format(year_filename))
+
