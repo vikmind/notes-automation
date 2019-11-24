@@ -4,18 +4,21 @@ RED='\033[1;31m'
 NC='\033[0m'
 DIR="$(dirname $0)/.."
 COUNT=0
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  ARGS = '-e'
+fi
 
-echo -e ""
-echo -e "${RED}FOCUS ON:${NC}"
-echo -e ""
+echo $ARGS ""
+echo $ARGS "${RED}FOCUS ON:${NC}"
+echo $ARGS ""
 while read line
 do
   COUNT=$(($COUNT+1))
   DIV3=$(($COUNT % 3))
   if [ $DIV3 == 1 ]; then
-    echo -e "$GREEN$line$NC"
+    echo $ARGS "$GREEN$line$NC"
   else
-    echo -e "$line"
+    echo $ARGS "$line"
   fi
 done < $DIR/focus.txt
 
