@@ -5,7 +5,7 @@ NC='\033[0m'
 DIR="$(dirname $0)/.."
 COUNT=0
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-  ARGS = '-e'
+  ARGS='-e'
 fi
 
 echo $ARGS ""
