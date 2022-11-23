@@ -1,8 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import os
 import subprocess
-import re
-from datetime import date, timedelta
+import json
+import requests
+from datetime import date, timedelta, datetime
 
 dir_path = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../')
 os.chdir(dir_path)
@@ -11,15 +12,23 @@ current_monday = today - timedelta(days=today.weekday())
 current_filename = current_monday.strftime('_Done_%Y-%m-%d_W%V.md')
 
 subprocess.run(['git', 'pull'], check=True)
-subprocess.run(['todoist', 's'], check=True)
 
-data = subprocess.check_output(['todoist', '--csv', 'cl', '-f', 'today']).decode('utf-8').splitlines()
+token = json.loads(open(os.path.normpath(os.environ['HOME'] + '/.todoist.config.json'), 'r').read())['token']
 
-def taskToMd(line):
-  return re.sub(r'^\d.+#"?([^,"]+)"?,*"?([^"]+)"?$', r'- [\1] \2', line)
+data = requests.get(
+    "https://api.todoist.com/sync/v9/completed/get_all",
+    { "since": datetime(*today.timetuple()[:6]).isoformat() },
+    headers={"Authorization": "Bearer " + token}
+).json()
+
+items = data['items']
+projects = data['projects']
+
+def taskToMd(item):
+  return f"- [{projects[item['project_id']]['name']}] {item['content']}"
 
 file = open(current_filename, 'a')
-file.write('\n'.join(list(map(taskToMd, data))))
+file.write('\n'.join(list(map(taskToMd, items))))
 
 if today.weekday() < 6:
   tomorrow = today + timedelta(days=1)
