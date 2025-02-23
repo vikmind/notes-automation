@@ -28,11 +28,8 @@ def taskToMd(item):
   return f"- [{projects[item['project_id']]['name']}] {item['content']}"
 
 file = open(current_filename, 'a')
+file.write('\n#### {}\n'.format(today.strftime('%A, %B %d')))
 file.write('\n'.join(list(map(taskToMd, items))))
-
-if today.weekday() < 6:
-  tomorrow = today + timedelta(days=1)
-  file.write(tomorrow.strftime('\n\n#### %A, %B %d\n'))
 
 file.close()
 

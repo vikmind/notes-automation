@@ -49,8 +49,6 @@ for idx, project in enumerate(projects):
       goals[idx] + ' '*(longest_goal - len(goals[idx])))
   new_week_file.write(line + '\n')
 
-# Write Monday string
-new_week_file.write('\n#### {}\n'.format(next_monday.strftime('%A, %B %d')))
 new_week_file.close()
 
 print('File {} created'.format(new_file_name))
