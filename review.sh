@@ -41,25 +41,42 @@ if [[ -z "$token" || "$token" == "null" ]]; then
   exit 1
 fi
 
-# Fetch completed items since local midnight
+# Fetch completed items since local midnight until now
 response="$(curl -sS --get \
   -H "Authorization: Bearer $token" \
   --data-urlencode "since=$since" \
-  "https://api.todoist.com/sync/v9/completed/get_all")"
+  --data-urlencode "until=$(date +"%Y-%m-%dT23:59:59")" \
+  "https://api.todoist.com/api/v1/tasks/completed/by_completion_date")"
+
+# Fetch projects
+projects_array="$(
+  curl -sS \
+    -H "Authorization: Bearer $token" \
+    "https://api.todoist.com/api/v1/projects" \
+  | jq '.results'
+)"
+
+tasks_json="$(echo "$response" | jq --argjson projects "$projects_array" '
+  .items
+  | map(
+      . as $t
+      | ($projects[] | select(.id == $t.project_id)) as $p
+      | {
+          task_id:      $t.task_id,
+          content:      $t.content,
+          completed_at: $t.completed_at,
+          project_id:   $t.project_id,
+          project_name: $p.name
+        }
+    )
+')"
 
 # Append markdown
 {
   printf "\n#### %s\n" "$header"
-  echo "$response" | jq -r '
-    def to_project_map:
-      if (.projects | type == "object") then .projects
-      else reduce (.projects // [])[] as $p ({}; .[$p.id|tostring] = $p)
-      end;
-    to_project_map as $projects
-    | (.items // [])[]
-    | "- [\($projects[.project_id|tostring].name)] \(.content)"
-  '
+  echo "$tasks_json" | jq -r '.[] | "- [\(.project_name)] \(.content)"'
 } >> "$current_filename"
+
 
 # Open in editor (fallback to vi)
 "${EDITOR:-vi}" "$current_filename"
